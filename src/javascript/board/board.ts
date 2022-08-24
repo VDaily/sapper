@@ -1,17 +1,31 @@
-function createBoardArray(x: number, y: number) {
-  let board = [];
-
-  for (let i = 1; i <= y; i++) {
-    for (let j = 1; j <= x; j++) {
-      board.push({
-        coordinates: [i, j],
-        isMine: false,
-      });
-    }
-  }
-  return board;
+interface Board {
+  arrayBoard: object[];
 }
-class Board {}
-let board = createBoardArray(6, 6);
-
+interface Point {
+  coordinates: [number, number];
+  isMine: boolean;
+}
+class Board {
+  constructor(public width: number, public height: number) {
+    this.arrayBoard = this.createBoardArray(width, height);
+  }
+  createBoardArray(x: number, y: number) {
+    let board = [];
+    for (let i = 0; i < y; i++) {
+      let arr = [];
+      for (let j = 0; j < x; j++) {
+        let point: Point = {
+          coordinates: [i, j],
+          isMine: false,
+        };
+        arr.push(point);
+      }
+      board.push(arr);
+    }
+    return board;
+  }
+}
+let width = 9;
+let height = 9;
+let board = new Board(width, height);
 export { board };

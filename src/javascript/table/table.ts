@@ -1,12 +1,23 @@
-function createTable(board) {
+function createTable(board: any) {
   let table = document.createElement("table");
-  let tr = document.createElement("tr");
-  board.forEach((block) => {
-    let td = document.createElement("td");
-    td.innerHTML += block.coordinates;
-    tr.append(td);
-  });
-  table.append(tr);
+  table.classList.add("board");
+  let tr: HTMLTableRowElement;
+  let width = board.width;
+  let height = board.height;
+  let numberOfCell = board.width * board.height;
+
+  for (let i = 0; i < height; i++) {
+    tr = document.createElement("tr");
+    tr.classList.add("board__row");
+    for (let j = 0; j < width; j++) {
+      let td = document.createElement("td");
+      board.arrayBoard[i][j].td = td;
+      td.classList.add("board__cell");
+      tr.append(td);
+    }
+    table.append(tr);
+  }
+
   document.body.append(table);
 }
 

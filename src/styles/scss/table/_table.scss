@@ -1,0 +1,13 @@
+.board {
+  border-collapse: collapse;
+  &__cell {
+    width: 22px;
+    height: 22px;
+    background: #8f8f8f;
+    border: 1px solid #000;
+
+    &_opened {
+      background: rgb(213, 213, 213);
+    }
+  }
+}

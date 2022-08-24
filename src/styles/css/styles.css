@@ -1,0 +1,14 @@
+.board {
+  border-collapse: collapse;
+}
+.board__cell {
+  width: 22px;
+  height: 22px;
+  background: #8f8f8f;
+  border: 1px solid #000;
+}
+.board__cell_opened {
+  background: rgb(213, 213, 213);
+}
+
+/*# sourceMappingURL=styles.css.map */
