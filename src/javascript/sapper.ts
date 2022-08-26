@@ -1,58 +1,135 @@
-import { board } from "../javascript/board/board.js";
+import { createTable, Board } from "../javascript/board/board.js";
 import { placeMines } from "../javascript/mines/placeMines.js";
-import { createTable } from "../javascript/table/table.js";
+import { createMenu, setInMenuCountMines, Timer } from "./board/menu/menu.js";
 import { UniqueCells } from "../javascript/cells/cells.js";
-
-createTable(board);
-placeMines(board);
-
-let table = document.querySelector(".board");
-let uniqueCells = new UniqueCells();
-
-table?.addEventListener("click", (event: any) => {
-  if (!event.target?.matches(".board__cell")) return;
-  let target = event.target;
-  let tr = target.closest(".board__row");
-  let cell = board.arrayBoard[tr.rowIndex][target.cellIndex];
-  if (cell.isOpen) return;
-  if (isHit(cell)) {
-    alert("BOOM");
-    return;
-  } else {
-    if (cell.countMines > 0) {
-      openCell(cell);
-      markMines(cell, cell.countMines);
-      return;
-    }
-    uniqueCells.aroundCells(cell, board);
-
-    walkTheAroundCells(board);
+import { endGame } from "../javascript/endGame/endGame.js";
+import { Flags } from "../javascript/flags/flags.js";
+window.addEventListener("click", function (event) {
+  if (event.button === 2) {
+    event.preventDefault();
   }
-
-  uniqueCells.setCells.clear();
 });
+interface Sapper {
+  allCellsArray: any;
+  mines: any;
+  table: any;
+  uniqueCells: UniqueCells;
+  isStartGame: boolean;
+}
+class Sapper {
+  constructor() {
+    this.board = this.createBoard(9, 9);
+    this.allCellsArray = this.createArrayAllCells(this.board);
+    this.mines = placeMines(this.board);
+    setInMenuCountMines(this.mines.length);
+    this.table = document.querySelector(".board");
+    this.uniqueCells = new UniqueCells();
+    this.isStartGame = false;
+    this.flags = new Flags(this.mines.length);
+    this.timer = new Timer();
+    this.startGame();
+    this.click = this.click.bind(this);
+    this.table.addEventListener("contextmenu", this.click);
+  }
 
-function isHit(cell: any) {
-  if (cell.isMine) return true;
-  return false;
-}
-
-function openCell(cell: any) {
-  cell.td.classList.add("board__cell_opened");
-  cell.isOpen = true;
-}
-function markMines(cell: any, count: any) {
-  cell.td.innerHTML = count;
-}
-function walkTheAroundCells(board: any) {
-  for (let cell of uniqueCells.setCells.values()) {
-    if (cell.isMine === false) {
-      if (cell.countMines > 0) {
-        markMines(cell, cell.countMines);
-      } else {
-        uniqueCells.aroundCells(cell, board);
+  startGame() {
+    this.click = this.click.bind(this);
+    this.table?.addEventListener("click", this.click);
+  }
+  finishGame() {
+    this.table?.removeEventListener("click", this.click);
+    this.timer.finishTimer();
+  }
+  restart() {
+    this.table.remove();
+    sapper = new Sapper();
+    this.finishGame();
+    this.startGame();
+  }
+  walkTheAroundCells(board: any) {
+    for (let cell of this.uniqueCells.setCells.values()) {
+      if (cell.isMine === false) {
+        if (cell.countMines > 0) {
+          this.markMines(cell, cell.countMines);
+        } else {
+          this.uniqueCells.aroundCells(cell, board);
+        }
+        this.openCell(cell);
       }
-      openCell(cell);
     }
   }
+  click(event) {
+    if (!event.target?.matches(".board__cell")) return;
+
+    let target = event.target;
+    let tr = target.closest(".board__row");
+    let cell = this.board.arrayBoard[tr.rowIndex][target.cellIndex];
+    event.preventDefault();
+    if (cell.isOpen) return;
+    if (event.button === 0) {
+      if (cell.isFlag) return;
+      if (!this.isStartGame) {
+        this.isStartGame = true;
+        this.timer.startTimer();
+      }
+      if (this.isHit(cell)) {
+        endGame(cell, this.mines);
+        this.finishGame();
+        return;
+      } else {
+        if (cell.countMines > 0) {
+          this.openCell(cell);
+          this.markMines(cell, cell.countMines);
+          return;
+        }
+        this.uniqueCells.aroundCells(cell, this.board);
+
+        this.walkTheAroundCells(this.board);
+      }
+
+      this.uniqueCells.setCells.clear();
+    } else if (event.button === 2) {
+      if (cell.isFlag === true) {
+        if (this.flags.countFlags >= this.mines.length) return;
+        this.flags.deleteAFlag(cell);
+        cell.isFlag = false;
+        return;
+      }
+      if (this.flags.countFlags <= 0) return;
+      this.flags.putAFlag(cell);
+      cell.isFlag = true;
+    }
+    console.log(event.button);
+  }
+  isHit(cell: any) {
+    if (cell.isMine) return true;
+    return false;
+  }
+
+  openCell(cell: any) {
+    cell.td.classList.add("board__cell_opened");
+    cell.isOpen = true;
+  }
+  markMines(cell: any, count: any) {
+    cell.td.innerHTML = count;
+  }
+
+  createArrayAllCells(board: any) {
+    let allCellsArray: object[] = [];
+    board.arrayBoard.forEach((row: []) => {
+      row.forEach((cell) => {
+        allCellsArray.push(cell);
+      });
+    });
+    return allCellsArray;
+  }
+  createBoard(width: number, height: number) {
+    let board = new Board(width, height);
+    createTable(board);
+    return board;
+  }
 }
+
+let sapper = new Sapper();
+
+export { sapper };

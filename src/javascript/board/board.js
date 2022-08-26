@@ -1,4 +1,7 @@
+import { createTable } from "./table/table.js";
 class Board {
+    width;
+    height;
     constructor(width, height) {
         this.width = width;
         this.height = height;
@@ -22,5 +25,5 @@ class Board {
 }
 let width = 9;
 let height = 9;
-let board = new Board(width, height);
-export { board };
+// let board = new Board(width, height);
+export { createTable, Board };

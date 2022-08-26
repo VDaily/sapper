@@ -38,9 +38,9 @@ class Cells {
     }
 }
 class UniqueCells extends Cells {
+    setCells = new Set();
     constructor() {
         super();
-        this.setCells = new Set();
     }
 }
 export { UniqueCells };

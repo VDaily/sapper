@@ -1,3 +1,4 @@
+import { createTable } from "./table/table.js";
 interface Board {
   arrayBoard: object[];
 }
@@ -27,5 +28,6 @@ class Board {
 }
 let width = 9;
 let height = 9;
-let board = new Board(width, height);
-export { board };
+// let board = new Board(width, height);
+
+export { createTable, Board };

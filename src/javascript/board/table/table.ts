@@ -1,6 +1,12 @@
+import { createMenu } from "../menu/menu.js";
+
 function createTable(board: any) {
   let table = document.createElement("table");
-  table.classList.add("board");
+  let div = document.createElement("div");
+  let menu = createMenu();
+  div.classList.add("board", "board_startGame");
+
+  table.classList.add("board__table");
   let tr: HTMLTableRowElement;
   let width = board.width;
   let height = board.height;
@@ -17,8 +23,10 @@ function createTable(board: any) {
     }
     table.append(tr);
   }
+  div.append(menu);
+  div.append(table);
 
-  document.body.append(table);
+  document.body.append(div);
 }
 
 export { createTable };

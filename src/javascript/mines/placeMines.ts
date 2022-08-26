@@ -1,18 +1,21 @@
 import { UniqueCells } from "../cells/cells.js";
 
-function placeMines(board: any): void {
+function placeMines(board: any) {
   let indexes = generationIndexes(board.width, board.height);
   let minesAroundcell = new UniqueCells();
   let countMines = new UniqueCells();
-
+  let mines = [];
+  console.log(board);
   indexes.forEach((index: any) => {
     let cellWithMine = board.arrayBoard[index[0]][index[1]];
     cellWithMine.isMine = true;
+    mines.push(cellWithMine);
     minesAroundcell.aroundCells(cellWithMine, board);
   });
   for (let cell of minesAroundcell.setCells.values()) {
     let count = 0;
     if (cell.isMine === true) continue;
+    if (Object.hasOwnProperty(cell.countMines)) continue;
     countMines.aroundCells(cell, board);
     for (let currentCell of countMines.setCells.values()) {
       if (currentCell.isMine === true) {
@@ -25,6 +28,8 @@ function placeMines(board: any): void {
   }
 
   minesAroundcell.setCells.clear();
+
+  return mines;
 }
 function isFreely(
   indexes: number[],
@@ -39,8 +44,8 @@ function isFreely(
 
 function generationIndexes(width: number, height: number) {
   let numberOfCell = width * height;
-  // let numberOfMines = 10;
-  let numberOfMines = Math.ceil((numberOfCell / 100) * 15);
+  let numberOfMines = 10;
+  // let numberOfMines = Math.ceil((numberOfCell / 100) * 15);
 
   let randomNumberX: number, randomNumberY: number;
   let indexes: any = [];

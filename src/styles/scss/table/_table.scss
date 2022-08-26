@@ -1,13 +1,119 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  font-style: sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+}
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
 .board {
-  border-collapse: collapse;
+  background-color: #edeaf3;
+  padding: 20px;
+  margin-top: 20px;
+  border-top: 3px solid #d9d5e3;
+  border-right: 3px solid #958bab;
+  border-bottom: 3px solid #958bab;
+  border-left: 3px solid #d9d5e3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  &__table {
+    border-spacing: 0;
+    text-align: center;
+    cursor: pointer;
+  }
   &__cell {
-    width: 22px;
-    height: 22px;
-    background: #8f8f8f;
-    border: 1px solid #000;
+    width: 25px;
+    height: 25px;
+    background: #d2c7ec;
 
+    border-top: 3px solid #e6e1f2;
+    border-right: 3px solid #9286ae;
+    border-bottom: 3px solid #9286ae;
+    border-left: 3px solid #e6e1f2;
+    .board_startGame &:active:not(.board__cell_opened),
+    .board_startGame &:active:not(.board__cell_flag) {
+      background: #feef99;
+      border: 1px solid #cbb951;
+    }
     &_opened {
-      background: rgb(213, 213, 213);
+      background: #feef99;
+      border: 1px solid #cbb951;
+    }
+    &_flag {
+      background: url("../../img/flags/flag.png");
+      background-size: cover;
+    }
+    &_mine {
+      background: url(../../img/mine/mine.png) #ffeb73 no-repeat;
+
+      background-size: 100%;
+    }
+    &_mine-click {
+      background: url(../../img/mine/mine.png) rgb(200, 3, 3) no-repeat;
+      background-size: 100%;
+      border: 1px solid #8f8f8f;
     }
   }
+}
+
+.menu {
+  color: #342b4d;
+  max-width: 250px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+  // align-items: center;
+
+  &__countMines {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+  }
+  &__reload {
+    flex: 1;
+    margin-right: 20px;
+  }
+  &__img {
+    width: 70px;
+    height: 70px;
+    background: url("../../img/menu/menu__reload/1.png");
+    background-size: cover;
+    cursor: pointer;
+  }
+  &__timer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  &__paragraph {
+    font-size: 16px;
+    margin-bottom: 5px;
+    // font-weight: normal;
+  }
+  &__span {
+    color: rgb(86, 33, 33);
+  }
+  &__timer-paragraph {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  &__timer-seconds {
+    color: rgb(86, 33, 33);
+  }
+
+  // &__
 }
