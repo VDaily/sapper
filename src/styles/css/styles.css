@@ -43,7 +43,7 @@ body {
   border-bottom: 3px solid #9286ae;
   border-left: 3px solid #e6e1f2;
 }
-.board_startGame .board__cell:active:not(.board__cell_opened), .board_startGame .board__cell:active:not(.board__cell_flag) {
+.board_startGame .board__cell:active:not(.board__cell_opened, .board__cell_flag) {
   background: #feef99;
   border: 1px solid #cbb951;
 }
@@ -52,17 +52,41 @@ body {
   border: 1px solid #cbb951;
 }
 .board__cell_flag {
-  background: url("../../img/flags/flag.png");
+  background: url("../../img/flags/flag.png") #d2c7ec no-repeat;
   background-size: cover;
 }
 .board__cell_mine {
-  background: url(../../img/mine/mine.png) #ffeb73 no-repeat;
+  background: url(../../img/mine/mine.png) #feef99 no-repeat;
   background-size: 100%;
 }
 .board__cell_mine-click {
   background: url(../../img/mine/mine.png) rgb(200, 3, 3) no-repeat;
   background-size: 100%;
   border: 1px solid #8f8f8f;
+}
+.board__cell_one-mine {
+  color: #0066cb;
+}
+.board__cell_two-mines {
+  color: #01b601;
+}
+.board__cell_three-mines {
+  color: #d41313;
+}
+.board__cell_four-mines {
+  color: #ff0080;
+}
+.board__cell_five-mines {
+  color: #6400c7;
+}
+.board__cell_six-mines {
+  color: #ff8000;
+}
+.board__cell_seven-mines {
+  color: #929201;
+}
+.board__cell_eight-mines {
+  color: #c01570;
 }
 
 .menu {
@@ -84,10 +108,31 @@ body {
   flex: 1;
   margin-right: 20px;
 }
+.board_startGame .menu__img {
+  width: 70px;
+  height: 70px;
+  background: url("../../img/menu/menu__reload/1.png") #edeaf3 no-repeat;
+  background-size: cover;
+  cursor: pointer;
+}
+.board_won .menu__img {
+  width: 70px;
+  height: 70px;
+  background: url("../../img/menu/menu__reload/4.png") #edeaf3 no-repeat;
+  background-size: 100%;
+  cursor: pointer;
+}
+.menu__reload_scary .menu__img {
+  width: 70px;
+  height: 70px;
+  background: url("../../img/menu/menu__reload/2.png") #edeaf3 no-repeat;
+  background-size: 100%;
+  cursor: pointer;
+}
 .menu__img {
   width: 70px;
   height: 70px;
-  background: url("../../img/menu/menu__reload/1.png");
+  background: url("../../img/menu/menu__reload/3.png") #edeaf3 no-repeat;
   background-size: cover;
   cursor: pointer;
 }

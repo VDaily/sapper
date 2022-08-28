@@ -5,7 +5,6 @@ function placeMines(board: any) {
   let minesAroundcell = new UniqueCells();
   let countMines = new UniqueCells();
   let mines = [];
-  console.log(board);
   indexes.forEach((index: any) => {
     let cellWithMine = board.arrayBoard[index[0]][index[1]];
     cellWithMine.isMine = true;
@@ -36,10 +35,15 @@ function isFreely(
   randomNumberX: number,
   randomNumberY: number
 ): boolean {
-  indexes.forEach((elem: any) => {
+  for (let i = 0; i < indexes.length; i++) {
+    let elem = indexes[i];
     if (elem[0] === randomNumberX && elem[1] === randomNumberY) return false;
-  });
+  }
   return true;
+  // indexes.forEach((elem: any) => {
+  //   if (elem[0] === randomNumberX && elem[1] === randomNumberY) return false;
+  // });
+  // return true;
 }
 
 function generationIndexes(width: number, height: number) {
@@ -65,4 +69,32 @@ function generationIndexes(width: number, height: number) {
   return indexes;
 }
 
-export { placeMines };
+function addColorClassForCell(cell: HTMLElement, count: number): void {
+  switch (count) {
+    case 1:
+      cell.classList.add("board__cell_one-mine");
+      break;
+    case 2:
+      cell.classList.add("board__cell_two-mines");
+      break;
+    case 3:
+      cell.classList.add("board__cell_three-mines");
+      break;
+    case 4:
+      cell.classList.add("board__cell_four-mines");
+      break;
+    case 5:
+      cell.classList.add("board__cell_five-mines");
+      break;
+    case 6:
+      cell.classList.add("board__cell_six-mines");
+      break;
+    case 7:
+      cell.classList.add("board__cell_seven-mines");
+      break;
+    case 8:
+      cell.classList.add("board__cell_eight-mines");
+      break;
+  }
+}
+export { placeMines, addColorClassForCell };

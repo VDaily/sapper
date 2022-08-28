@@ -1,6 +1,6 @@
 import { createTable, Board } from "../javascript/board/board.js";
-import { placeMines } from "../javascript/mines/placeMines.js";
-import { setInMenuCountMines, Timer } from "./board/menu/menu.js";
+import { placeMines, addColorClassForCell } from "../javascript/mines/mines.js";
+import { setInMenuCountFlags, Timer } from "./board/menu/menu.js";
 import { UniqueCells } from "../javascript/cells/cells.js";
 import { endGame } from "../javascript/endGame/endGame.js";
 import { Flags } from "../javascript/flags/flags.js";
@@ -10,93 +10,113 @@ window.addEventListener("click", function (event) {
     }
 });
 class Sapper {
-    constructor() {
-        this.board = this.createBoard(9, 9);
+    constructor(width, height) {
+        this.board = this.createBoard(width, height);
         this.allCellsArray = this.createArrayAllCells(this.board);
         this.mines = placeMines(this.board);
-        setInMenuCountMines(this.mines.length);
+        setInMenuCountFlags(this.mines.length);
         this.table = document.querySelector(".board");
         this.uniqueCells = new UniqueCells();
         this.isStartGame = false;
         this.flags = new Flags(this.mines.length);
         this.timer = new Timer();
+        this.rightClickisOff = false;
         this.startGame();
-        this.click = this.click.bind(this);
-        this.table.addEventListener("contextmenu", this.click);
+        this.numberOfOpenCell = 0;
     }
     startGame() {
         this.click = this.click.bind(this);
+        this.mouseDown = this.mouseDown.bind(this);
+        this.mouseUp = this.mouseUp.bind(this);
+        this.rightClick = this.rightClick.bind(this);
+        this.table?.addEventListener("mousedown", this.mouseDown);
+        this.table?.addEventListener("mouseup", this.mouseUp);
         this.table?.addEventListener("click", this.click);
+        this.table.addEventListener("contextmenu", this.rightClick);
     }
     finishGame() {
+        this.table?.removeEventListener("mousedown", this.mouseDown);
+        this.table?.removeEventListener("mouseup", this.mouseUp);
         this.table?.removeEventListener("click", this.click);
         this.timer.finishTimer();
+        this.rightClickIsOff = true;
     }
-    restart() {
+    restart(width, height) {
         this.table.remove();
-        sapper = new Sapper();
+        sapper = new Sapper(width, height);
         this.finishGame();
         this.startGame();
     }
     walkTheAroundCells(board) {
         for (let cell of this.uniqueCells.setCells.values()) {
             if (cell.isMine === false) {
+                if (cell.isFlag)
+                    continue;
+                if (cell.isOpen)
+                    continue;
                 if (cell.countMines > 0) {
-                    this.markMines(cell, cell.countMines);
+                    addColorClassForCell(cell.td, cell.countMines);
+                    this.markCell(cell, cell.countMines);
                 }
                 else {
                     this.uniqueCells.aroundCells(cell, board);
                 }
                 this.openCell(cell);
+                this.numberOfOpenCell++;
             }
         }
     }
     click(event) {
-        if (!event.target?.matches(".board__cell"))
+        let cell = this.getACell(event.target);
+        if (!cell)
             return;
-        let target = event.target;
-        let tr = target.closest(".board__row");
-        let cell = this.board.arrayBoard[tr.rowIndex][target.cellIndex];
-        event.preventDefault();
         if (cell.isOpen)
             return;
-        if (event.button === 0) {
-            if (cell.isFlag)
-                return;
-            if (!this.isStartGame) {
-                this.isStartGame = true;
-                this.timer.startTimer();
-            }
-            if (this.isHit(cell)) {
-                endGame(cell, this.mines);
-                this.finishGame();
-                return;
-            }
-            else {
-                if (cell.countMines > 0) {
-                    this.openCell(cell);
-                    this.markMines(cell, cell.countMines);
-                    return;
-                }
-                this.uniqueCells.aroundCells(cell, this.board);
-                this.walkTheAroundCells(this.board);
-            }
-            this.uniqueCells.setCells.clear();
+        if (cell.isFlag)
+            return;
+        if (!this.isStartGame) {
+            this.isStartGame = true;
+            this.timer.startTimer();
         }
-        else if (event.button === 2) {
-            if (cell.isFlag === true) {
-                if (this.flags.countFlags >= this.mines.length)
-                    return;
-                this.flags.deleteAFlag(cell);
-                cell.isFlag = false;
+        if (this.isHit(cell)) {
+            endGame(cell, this.mines);
+            this.finishGame();
+            this.isStartGame = false;
+            return;
+        }
+        else {
+            if (cell.countMines > 0) {
+                addColorClassForCell(cell.td, cell.countMines);
+                this.numberOfOpenCell++;
+                this.openCell(cell);
+                this.markCell(cell, cell.countMines);
+                this.isFinishGame(cell, this.mines);
                 return;
             }
-            if (this.flags.countFlags <= 0)
-                return;
-            this.flags.putAFlag(cell);
-            cell.isFlag = true;
+            this.uniqueCells.aroundCells(cell, this.board);
+            this.walkTheAroundCells(this.board);
         }
-        console.log(event.button);
+        this.isFinishGame(cell, this.mines);
+        this.uniqueCells.setCells.clear();
+    }
+    rightClick(event) {
+        let cell = this.getACell(event.target);
+        if (!cell)
+            return;
+        event.preventDefault();
+        if (this.rightClickIsOff)
+            return;
+        if (cell.isFlag === true) {
+            if (this.flags.countFlags >= this.mines.length)
+                return;
+            this.flags.deleteAFlag(cell);
+            cell.isFlag = false;
+            return;
+        }
+        if (this.flags.countFlags <= 0)
+            return;
+        this.flags.putAFlag(cell);
+        cell.isFlag = true;
     }
     isHit(cell) {
         if (cell.isMine)
@@ -107,7 +127,7 @@ class Sapper {
         cell.td.classList.add("board__cell_opened");
         cell.isOpen = true;
     }
-    markMines(cell, count) {
+    markCell(cell, count) {
         cell.td.innerHTML = count;
     }
     createArrayAllCells(board) {
@@ -124,6 +144,48 @@ class Sapper {
         createTable(board);
         return board;
     }
+    mouseUp(event) {
+        let cell = this.getACell(event.target);
+        if (!cell)
+            return;
+        if (cell.isOpen)
+            return;
+        if (event.button === 0) {
+            let menuReload = document.querySelector(".menu__reload");
+            menuReload.classList.remove("menu__reload_scary");
+        }
+    }
+    mouseDown(event) {
+        let cell = this.getACell(event.target);
+        if (!cell)
+            return;
+        if (cell.isOpen)
+            return;
+        if (event.button === 0) {
+            let menuReload = document.querySelector(".menu__reload");
+            menuReload.classList.add("menu__reload_scary");
+        }
+    }
+    getACell(element) {
+        if (!element.matches(".board__cell"))
+            return false;
+        let elementTd = element;
+        let tr = elementTd.closest(".board__row");
+        if (!tr)
+            return false;
+        let cell = this.board.arrayBoard[tr.rowIndex][elementTd.cellIndex];
+        return cell;
+    }
+    isFinishGame(cell, mines) {
+        console.log("isFinishGame", this.numberOfOpenCell, this.mines.length, this.allCellsArray.length, this.numberOfOpenCell + this.mines.length >= this.allCellsArray.length);
+        if (this.numberOfOpenCell + this.mines.length >=
+            this.allCellsArray.length) {
+            let isWon = true;
+            endGame(cell, mines, isWon);
+            this.finishGame();
+            return;
+        }
+    }
 }
-let sapper = new Sapper();
+let sapper = new Sapper(9, 9);
 export { sapper };

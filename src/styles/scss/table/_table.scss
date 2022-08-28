@@ -39,21 +39,21 @@ body {
     border-right: 3px solid #9286ae;
     border-bottom: 3px solid #9286ae;
     border-left: 3px solid #e6e1f2;
-    .board_startGame &:active:not(.board__cell_opened),
-    .board_startGame &:active:not(.board__cell_flag) {
+    .board_startGame &:active:not(.board__cell_opened, .board__cell_flag) {
       background: #feef99;
       border: 1px solid #cbb951;
     }
+
     &_opened {
       background: #feef99;
       border: 1px solid #cbb951;
     }
     &_flag {
-      background: url("../../img/flags/flag.png");
+      background: url("../../img/flags/flag.png") #d2c7ec no-repeat;
       background-size: cover;
     }
     &_mine {
-      background: url(../../img/mine/mine.png) #ffeb73 no-repeat;
+      background: url(../../img/mine/mine.png) #feef99 no-repeat;
 
       background-size: 100%;
     }
@@ -61,6 +61,30 @@ body {
       background: url(../../img/mine/mine.png) rgb(200, 3, 3) no-repeat;
       background-size: 100%;
       border: 1px solid #8f8f8f;
+    }
+    &_one-mine {
+      color: #0066cb;
+    }
+    &_two-mines {
+      color: #01b601;
+    }
+    &_three-mines {
+      color: #d41313;
+    }
+    &_four-mines {
+      color: #ff0080;
+    }
+    &_five-mines {
+      color: #6400c7;
+    }
+    &_six-mines {
+      color: #ff8000;
+    }
+    &_seven-mines {
+      color: #929201;
+    }
+    &_eight-mines {
+      color: #c01570;
     }
   }
 }
@@ -71,7 +95,6 @@ body {
   display: flex;
   justify-content: center;
   margin-bottom: 10px;
-  // align-items: center;
 
   &__countMines {
     flex: 1;
@@ -85,10 +108,31 @@ body {
     flex: 1;
     margin-right: 20px;
   }
+  .board_startGame &__img {
+    width: 70px;
+    height: 70px;
+    background: url("../../img/menu/menu__reload/1.png") #edeaf3 no-repeat;
+    background-size: cover;
+    cursor: pointer;
+  }
+  .board_won &__img {
+    width: 70px;
+    height: 70px;
+    background: url("../../img/menu/menu__reload/4.png") #edeaf3 no-repeat;
+    background-size: 100%;
+    cursor: pointer;
+  }
+  &__reload_scary &__img {
+    width: 70px;
+    height: 70px;
+    background: url("../../img/menu/menu__reload/2.png") #edeaf3 no-repeat;
+    background-size: 100%;
+    cursor: pointer;
+  }
   &__img {
     width: 70px;
     height: 70px;
-    background: url("../../img/menu/menu__reload/1.png");
+    background: url("../../img/menu/menu__reload/3.png") #edeaf3 no-repeat;
     background-size: cover;
     cursor: pointer;
   }

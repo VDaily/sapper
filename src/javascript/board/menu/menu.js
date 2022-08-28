@@ -6,7 +6,7 @@ function createMenu() {
     let menuText = createElementWithClass("p", "menu__paragraph");
     menuText.innerHTML = "Флаги";
     let menuCount = createElementWithClass("p", "menu__span");
-    menuCount.innerHTML = 0;
+    menuCount.innerHTML = "0";
     menuCountMines.append(menuText, menuCount);
     let reload = createElementWithClass("div", "menu__reload");
     reload.addEventListener("click", function (event) {
@@ -19,7 +19,7 @@ function createMenu() {
     let timerText = createElementWithClass("p", "menu__timer-paragraph");
     timerText.innerHTML = "Время";
     let timerSeconds = createElementWithClass("p", "menu__timer-seconds");
-    timerSeconds.innerHTML = 0;
+    timerSeconds.innerHTML = "0";
     timer.append(timerText, timerSeconds);
     //   startTimer(timer);
     menu.append(menuCountMines, reload, timer);
@@ -39,8 +39,10 @@ class Timer {
     }
     tic() {
         let timer = document.querySelector(".menu__timer-seconds");
+        if (!timer)
+            return;
         this.count++;
-        timer.innerHTML = this.count;
+        timer.innerHTML = `${this.count}`;
         let tic = this.tic.bind(this);
         this.saveIndexTimeout = setTimeout(tic, 1000);
     }
@@ -50,8 +52,10 @@ function createElementWithClass(tag, className) {
     div.classList.add(className);
     return div;
 }
-function setInMenuCountMines(count) {
+function setInMenuCountFlags(count) {
     let menuCountMines = document.querySelector(".menu__span");
-    menuCountMines.innerHTML = count;
+    if (!menuCountMines)
+        throw new Error("Не найден элемент menu__span");
+    menuCountMines.innerHTML = `${count}`;
 }
-export { createMenu, setInMenuCountMines, Timer };
+export { createMenu, setInMenuCountFlags, Timer };
