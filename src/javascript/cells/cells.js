@@ -1,4 +1,5 @@
 class Cells {
+    setCells;
     aroundCells(cell, board) {
         let aroundCells = [];
         let count = 0;

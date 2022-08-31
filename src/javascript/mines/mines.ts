@@ -1,22 +1,26 @@
 import { UniqueCells } from "../cells/cells.js";
+import { settings } from "../settings/settings.js";
 
 function placeMines(board: any) {
   let indexes = generationIndexes(board.width, board.height);
   let minesAroundcell = new UniqueCells();
   let countMines = new UniqueCells();
-  let mines = [];
+  let mines: Element[] = [];
   indexes.forEach((index: any) => {
     let cellWithMine = board.arrayBoard[index[0]][index[1]];
     cellWithMine.isMine = true;
     mines.push(cellWithMine);
     minesAroundcell.aroundCells(cellWithMine, board);
   });
-  for (let cell of minesAroundcell.setCells.values()) {
+  let cell: any;
+  let currentCell: any;
+  for (cell of minesAroundcell.setCells.values()) {
     let count = 0;
     if (cell.isMine === true) continue;
     if (Object.hasOwnProperty(cell.countMines)) continue;
     countMines.aroundCells(cell, board);
-    for (let currentCell of countMines.setCells.values()) {
+
+    for (currentCell of countMines.setCells.values()) {
       if (currentCell.isMine === true) {
         count++;
       }
@@ -36,19 +40,14 @@ function isFreely(
   randomNumberY: number
 ): boolean {
   for (let i = 0; i < indexes.length; i++) {
-    let elem = indexes[i];
+    let elem: any = indexes[i];
     if (elem[0] === randomNumberX && elem[1] === randomNumberY) return false;
   }
   return true;
-  // indexes.forEach((elem: any) => {
-  //   if (elem[0] === randomNumberX && elem[1] === randomNumberY) return false;
-  // });
-  // return true;
 }
-
 function generationIndexes(width: number, height: number) {
   let numberOfCell = width * height;
-  let numberOfMines = 10;
+  let numberOfMines = settings.levels[settings.currentIndex].countMines;
   // let numberOfMines = Math.ceil((numberOfCell / 100) * 15);
 
   let randomNumberX: number, randomNumberY: number;

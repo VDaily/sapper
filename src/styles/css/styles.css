@@ -20,7 +20,7 @@ body {
 .board {
   background-color: #edeaf3;
   padding: 20px;
-  margin-top: 20px;
+  margin-top: 60px;
   border-top: 3px solid #d9d5e3;
   border-right: 3px solid #958bab;
   border-bottom: 3px solid #958bab;
@@ -156,6 +156,18 @@ body {
 }
 .menu__timer-seconds {
   color: rgb(86, 33, 33);
+}
+
+.settings {
+  font-size: 16px;
+  display: flex;
+  margin-bottom: 10px;
+}
+.settings__title {
+  margin-right: 10px;
+}
+.settings__level {
+  cursor: pointer;
 }
 
 /*# sourceMappingURL=styles.css.map */

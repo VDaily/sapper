@@ -1,6 +1,11 @@
+import { sapper } from "../sapper.js";
 function endGame(currentCell: any, mines: [], isWon: boolean): void {
   removeClassesFromTagBoard(isWon);
-  if (!isWon === true) fail(currentCell, mines);
+  if (!isWon === true) {
+    fail(currentCell, mines);
+    return;
+  }
+  winningTheGame(mines);
 }
 interface Mine {
   coordinate: [number, number];
@@ -8,7 +13,6 @@ interface Mine {
   td: Element;
 }
 function addImgIntoCellsWithMines(mine: Mine, currentCell: Mine): void {
-  console.log(mine);
   if (mine !== currentCell) {
     mine.td.classList.add("board__cell_mine");
     return;
@@ -24,20 +28,26 @@ function fail(currentCell: Mine, mines: []): void {
 }
 function removeClassesFromTagBoard(isWon: boolean): void {
   let isBoard = document.querySelector(".board");
-  console.dir(isBoard);
   if (!isBoard) return;
   let board: Element = isBoard;
-  console.log(board);
   removeClassStartGame(board);
   if (isWon === true) {
-    won(board);
+    addClassBoard_Won(board);
   }
 }
 function removeClassStartGame(board: Element): void {
   board.classList.remove("board_startGame");
 }
 
-function won(board: Element): void {
+function addClassBoard_Won(board: Element): void {
   board.classList.add("board_won");
+}
+
+function winningTheGame(mines: []) {
+  for (let i = 0; i < mines.length; i++) {
+    let mine: any = mines[i];
+    if (mine.isFlag) continue;
+    sapper.flags.putAFlag(mine);
+  }
 }
 export { endGame };

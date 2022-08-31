@@ -1,9 +1,11 @@
 import { createMenu } from "../menu/menu.js";
+import { createSettings } from "../settingsElement/createSettingsElement.js";
 
 function createTable(board: any) {
   let table = document.createElement("table");
   let div = document.createElement("div");
   let menu = createMenu();
+  let settings = createSettings();
   div.classList.add("board", "board_startGame");
 
   table.classList.add("board__table");
@@ -23,6 +25,7 @@ function createTable(board: any) {
     }
     table.append(tr);
   }
+  div.append(settings);
   div.append(menu);
   div.append(table);
 

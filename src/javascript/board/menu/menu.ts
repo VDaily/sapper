@@ -14,7 +14,6 @@ function createMenu() {
   let reload = createElementWithClass("div", "menu__reload");
   reload.addEventListener("click", function (event) {
     sapper.restart();
-    // let sapper = new Sapper();
   });
   let reloadImg = createElementWithClass("div", "menu__img");
   reload.append(reloadImg);

@@ -1,10 +1,13 @@
+import { sapper } from "../sapper.js";
 function endGame(currentCell, mines, isWon) {
     removeClassesFromTagBoard(isWon);
-    if (!isWon === true)
+    if (!isWon === true) {
         fail(currentCell, mines);
+        return;
+    }
+    winningTheGame(mines);
 }
 function addImgIntoCellsWithMines(mine, currentCell) {
-    console.log(mine);
     if (mine !== currentCell) {
         mine.td.classList.add("board__cell_mine");
         return;
@@ -19,20 +22,26 @@ function fail(currentCell, mines) {
 }
 function removeClassesFromTagBoard(isWon) {
     let isBoard = document.querySelector(".board");
-    console.dir(isBoard);
     if (!isBoard)
         return;
     let board = isBoard;
-    console.log(board);
     removeClassStartGame(board);
     if (isWon === true) {
-        won(board);
+        addClassBoard_Won(board);
     }
 }
 function removeClassStartGame(board) {
     board.classList.remove("board_startGame");
 }
-function won(board) {
+function addClassBoard_Won(board) {
     board.classList.add("board_won");
+}
+function winningTheGame(mines) {
+    for (let i = 0; i < mines.length; i++) {
+        let mine = mines[i];
+        if (mine.isFlag)
+            continue;
+        sapper.flags.putAFlag(mine);
+    }
 }
 export { endGame };

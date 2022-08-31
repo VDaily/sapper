@@ -4,20 +4,29 @@ import { createMenu, setInMenuCountFlags, Timer } from "./board/menu/menu.js";
 import { UniqueCells } from "../javascript/cells/cells.js";
 import { endGame } from "../javascript/endGame/endGame.js";
 import { Flags } from "../javascript/flags/flags.js";
+import { settings } from "./settings/settings.js";
 window.addEventListener("click", function (event) {
   if (event.button === 2) {
     event.preventDefault();
   }
 });
 interface Sapper {
-  allCellsArray: any;
+  board: Board;
+  allCellsArray: object[];
   mines: any;
   table: any;
+  flags: Flags;
+  timer: Timer;
+  rightClickisOff: boolean;
   uniqueCells: UniqueCells;
   isStartGame: boolean;
+  numberOfOpenCell: number;
 }
+
 class Sapper {
-  constructor(width, height) {
+  constructor() {
+    let width = settings.levels[settings.currentIndex].sizes.width;
+    let height = settings.levels[settings.currentIndex].sizes.height;
     this.board = this.createBoard(width, height);
     this.allCellsArray = this.createArrayAllCells(this.board);
     this.mines = placeMines(this.board);
@@ -47,16 +56,17 @@ class Sapper {
     this.table?.removeEventListener("mouseup", this.mouseUp);
     this.table?.removeEventListener("click", this.click);
     this.timer.finishTimer();
-    this.rightClickIsOff = true;
+    this.rightClickisOff = true;
   }
-  restart(width: number, height: number) {
+  restart() {
     this.table.remove();
-    sapper = new Sapper(width, height);
+    sapper = new Sapper();
     this.finishGame();
     this.startGame();
   }
   walkTheAroundCells(board: any) {
-    for (let cell of this.uniqueCells.setCells.values()) {
+    let cell: any;
+    for (cell of this.uniqueCells.setCells.values()) {
       if (cell.isMine === false) {
         if (cell.isFlag) continue;
         if (cell.isOpen) continue;
@@ -72,7 +82,7 @@ class Sapper {
       }
     }
   }
-  click(event) {
+  click(event: Event) {
     let cell = this.getACell(event.target);
     if (!cell) return;
 
@@ -83,7 +93,7 @@ class Sapper {
       this.timer.startTimer();
     }
     if (this.isHit(cell)) {
-      endGame(cell, this.mines);
+      endGame(cell, this.mines, false);
       this.finishGame();
       this.isStartGame = false;
       return;
@@ -103,11 +113,12 @@ class Sapper {
     this.isFinishGame(cell, this.mines);
     this.uniqueCells.setCells.clear();
   }
-  rightClick(event) {
+  rightClick(event: Event) {
+    if (!event.target) return;
     let cell = this.getACell(event.target);
     if (!cell) return;
     event.preventDefault();
-    if (this.rightClickIsOff) return;
+    if (this.rightClickisOff) return;
 
     if (cell.isFlag === true) {
       if (this.flags.countFlags >= this.mines.length) return;
@@ -116,6 +127,7 @@ class Sapper {
       return;
     }
     if (this.flags.countFlags <= 0) return;
+    if (cell.isOpen) return;
     this.flags.putAFlag(cell);
     cell.isFlag = true;
   }
@@ -146,42 +158,37 @@ class Sapper {
     createTable(board);
     return board;
   }
-  mouseUp(event) {
+  mouseUp(event: MouseEvent) {
     let cell = this.getACell(event.target);
     if (!cell) return;
     if (cell.isOpen) return;
     if (event.button === 0) {
       let menuReload = document.querySelector(".menu__reload");
+      if (!menuReload) throw new Error("Не найден класс menu__reload");
       menuReload.classList.remove("menu__reload_scary");
     }
   }
-  mouseDown(event) {
+  mouseDown(event: MouseEvent) {
     let cell = this.getACell(event.target);
     if (!cell) return;
     if (cell.isOpen) return;
     if (event.button === 0) {
       let menuReload = document.querySelector(".menu__reload");
+      if (!menuReload) throw new Error("Не найден класс menu__reload");
       menuReload.classList.add("menu__reload_scary");
     }
   }
 
-  getACell(element: HTMLElement) {
+  getACell(element: any) {
     if (!element.matches(".board__cell")) return false;
     let elementTd = element;
-    let tr = elementTd.closest(".board__row");
+    let tr: HTMLTableRowElement | null = elementTd.closest(".board__row");
     if (!tr) return false;
     let cell = this.board.arrayBoard[tr.rowIndex][elementTd.cellIndex];
 
     return cell;
   }
-  isFinishGame(cell, mines) {
-    console.log(
-      "isFinishGame",
-      this.numberOfOpenCell,
-      this.mines.length,
-      this.allCellsArray.length,
-      this.numberOfOpenCell + this.mines.length >= this.allCellsArray.length
-    );
+  isFinishGame(cell: Element, mines: []) {
     if (
       this.numberOfOpenCell + this.mines.length >=
       this.allCellsArray.length
@@ -194,6 +201,6 @@ class Sapper {
   }
 }
 
-let sapper = new Sapper(9, 9);
+let sapper = new Sapper();
 
 export { sapper };

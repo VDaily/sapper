@@ -1,6 +1,6 @@
 import { createTable } from "./table/table.js";
 interface Board {
-  arrayBoard: object[];
+  arrayBoard: any;
 }
 interface Point {
   coordinates: [number, number];

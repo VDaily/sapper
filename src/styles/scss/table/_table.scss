@@ -17,7 +17,7 @@ body {
 .board {
   background-color: #edeaf3;
   padding: 20px;
-  margin-top: 20px;
+  margin-top: 60px;
   border-top: 3px solid #d9d5e3;
   border-right: 3px solid #958bab;
   border-bottom: 3px solid #958bab;
@@ -160,4 +160,16 @@ body {
   }
 
   // &__
+}
+
+.settings {
+  font-size: 16px;
+  display: flex;
+  margin-bottom: 10px;
+  &__title {
+    margin-right: 10px;
+  }
+  &__level {
+    cursor: pointer;
+  }
 }

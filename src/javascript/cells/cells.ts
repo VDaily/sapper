@@ -1,4 +1,5 @@
 class Cells {
+  setCells: any;
   aroundCells(cell: any, board: any): void {
     let aroundCells = [];
     let count = 0;
@@ -63,10 +64,12 @@ class Cells {
     });
   }
 }
+
 class UniqueCells extends Cells {
   setCells = new Set();
   constructor() {
     super();
   }
 }
+
 export { UniqueCells };
