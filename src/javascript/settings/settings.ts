@@ -1,4 +1,3 @@
-import { createSettings } from "../board/settingsElement/createSettingsElement.js";
 import { sapper } from "../sapper.js";
 interface Settings {
   currentIndex: number;
@@ -9,7 +8,6 @@ interface Settings {
       height: number;
     };
     countMines: number;
-    isActive: boolean;
   }[];
   settingsLevel: any;
 }
@@ -24,7 +22,6 @@ class Settings {
           height: 9,
         },
         countMines: 15,
-        isActive: true,
       },
       {
         name: "Средний",
@@ -33,7 +30,6 @@ class Settings {
           height: 16,
         },
         countMines: 40,
-        isActive: false,
       },
       {
         name: "Сложный",
@@ -42,7 +38,6 @@ class Settings {
           height: 30,
         },
         countMines: 135,
-        isActive: false,
       },
       {
         name: "Профессионал",
@@ -51,7 +46,6 @@ class Settings {
           height: 50,
         },
         countMines: 375,
-        isActive: false,
       },
     ];
     this.currentIndex = 0;
@@ -62,27 +56,6 @@ class Settings {
     console.log(sapper.restart());
   }
 }
-
-// click(event: Event) {
-//     event.preventDefault();
-//     this.currentIndex++;
-//     this.changeSizesOfBoard();
-//     this.changeSettingsLevel();
-//   }
-//   getElementSettings() {
-//     let settings = document.querySelector(".settings");
-//     if (!settings) throw new Error("Не найден элемент с классом .settings");
-//     return settings;
-//   }
-//   changeSettingsLevel() {
-//     if (this.currentIndex >= this.levels.length) this.currentIndex = 0;
-//     console.log(this.settingsLevel, this.levels[this.currentIndex].name);
-//     this.settingsLevel.innerHTML = this.levels[this.currentIndex].name;
-//   }
-//   changeSizesOfBoard() {
-//     let width = this.levels[this.currentIndex].sizes.width;
-//     let height = this.levels[this.currentIndex].sizes.height;
-//     this.sapper.restart(width, height);
 
 let settings = new Settings();
 export { settings };

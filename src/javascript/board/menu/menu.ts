@@ -25,7 +25,6 @@ function createMenu() {
   timerSeconds.innerHTML = "0";
   timer.append(timerText, timerSeconds);
 
-  //   startTimer(timer);
   menu.append(menuCountMines, reload, timer);
   return menu;
 }

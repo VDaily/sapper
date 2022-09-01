@@ -1,25 +1,21 @@
 import { createTable, Board } from "../javascript/board/board.js";
 import { placeMines, addColorClassForCell } from "../javascript/mines/mines.js";
-import { createMenu, setInMenuCountFlags, Timer } from "./board/menu/menu.js";
+import { setInMenuCountFlags, Timer } from "./board/menu/menu.js";
 import { UniqueCells } from "../javascript/cells/cells.js";
 import { endGame } from "../javascript/endGame/endGame.js";
 import { Flags } from "../javascript/flags/flags.js";
 import { settings } from "./settings/settings.js";
-window.addEventListener("click", function (event) {
-  if (event.button === 2) {
-    event.preventDefault();
-  }
-});
+
 interface Sapper {
   board: Board;
   allCellsArray: object[];
   mines: any;
-  table: any;
+  table: HTMLElement;
+  uniqueCells: UniqueCells;
+  isStartGame: boolean;
   flags: Flags;
   timer: Timer;
   rightClickisOff: boolean;
-  uniqueCells: UniqueCells;
-  isStartGame: boolean;
   numberOfOpenCell: number;
 }
 
@@ -30,15 +26,20 @@ class Sapper {
     this.board = this.createBoard(width, height);
     this.allCellsArray = this.createArrayAllCells(this.board);
     this.mines = placeMines(this.board);
-    setInMenuCountFlags(this.mines.length);
-    this.table = document.querySelector(".board");
+
+    let board: HTMLElement | null = document.querySelector(".board");
+    if (!board) throw new Error("Не найден элемент с классом .board");
+    this.table = board;
+
     this.uniqueCells = new UniqueCells();
     this.isStartGame = false;
     this.flags = new Flags(this.mines.length);
     this.timer = new Timer();
     this.rightClickisOff = false;
-    this.startGame();
     this.numberOfOpenCell = 0;
+
+    setInMenuCountFlags(this.mines.length);
+    this.startGame();
   }
 
   startGame() {
@@ -65,21 +66,22 @@ class Sapper {
     this.startGame();
   }
   walkTheAroundCells(board: any) {
-    let cell: any;
-    for (cell of this.uniqueCells.setCells.values()) {
-      if (cell.isMine === false) {
-        if (cell.isFlag) continue;
-        if (cell.isOpen) continue;
-        if (cell.countMines > 0) {
-          addColorClassForCell(cell.td, cell.countMines);
-          this.markCell(cell, cell.countMines);
-        } else {
-          this.uniqueCells.aroundCells(cell, board);
-        }
+    let cell: any,
+      uniqueCellsValues = this.uniqueCells.setCells.values();
 
-        this.openCell(cell);
-        this.numberOfOpenCell++;
+    for (cell of uniqueCellsValues) {
+      if (cell.isMine !== false) continue;
+      if (cell.isFlag) continue;
+      if (cell.isOpen) continue;
+      if (cell.countMines > 0) {
+        addColorClassForCell(cell.td, cell.countMines);
+        this.markCell(cell, cell.countMines);
+      } else {
+        this.uniqueCells.aroundCells(cell, board);
       }
+
+      this.openCell(cell);
+      this.numberOfOpenCell++;
     }
   }
   click(event: Event) {
@@ -115,8 +117,10 @@ class Sapper {
   }
   rightClick(event: Event) {
     if (!event.target) return;
+
     let cell = this.getACell(event.target);
     if (!cell) return;
+
     event.preventDefault();
     if (this.rightClickisOff) return;
 
@@ -181,8 +185,8 @@ class Sapper {
 
   getACell(element: any) {
     if (!element.matches(".board__cell")) return false;
-    let elementTd = element;
-    let tr: HTMLTableRowElement | null = elementTd.closest(".board__row");
+    let elementTd = element,
+      tr: HTMLTableRowElement | null = elementTd.closest(".board__row");
     if (!tr) return false;
     let cell = this.board.arrayBoard[tr.rowIndex][elementTd.cellIndex];
 

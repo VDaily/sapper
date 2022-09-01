@@ -44,7 +44,8 @@ function addClassBoard_Won(board: Element): void {
 }
 
 function winningTheGame(mines: []) {
-  for (let i = 0; i < mines.length; i++) {
+  let lengthOfArrayMines = mines.length;
+  for (let i = 0; i < lengthOfArrayMines; i++) {
     let mine: any = mines[i];
     if (mine.isFlag) continue;
     sapper.flags.putAFlag(mine);

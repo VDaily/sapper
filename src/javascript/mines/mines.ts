@@ -39,7 +39,8 @@ function isFreely(
   randomNumberX: number,
   randomNumberY: number
 ): boolean {
-  for (let i = 0; i < indexes.length; i++) {
+  let lengthOfIndexes = indexes.length;
+  for (let i = 0; i < lengthOfIndexes; i++) {
     let elem: any = indexes[i];
     if (elem[0] === randomNumberX && elem[1] === randomNumberY) return false;
   }
