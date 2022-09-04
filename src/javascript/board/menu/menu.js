@@ -20,7 +20,6 @@ function createMenu() {
     let timerSeconds = createElementWithClass("p", "menu__timer-seconds");
     timerSeconds.innerHTML = "0";
     timer.append(timerText, timerSeconds);
-    //   startTimer(timer);
     menu.append(menuCountMines, reload, timer);
     return menu;
 }

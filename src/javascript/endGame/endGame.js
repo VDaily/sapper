@@ -37,7 +37,8 @@ function addClassBoard_Won(board) {
     board.classList.add("board_won");
 }
 function winningTheGame(mines) {
-    for (let i = 0; i < mines.length; i++) {
+    let lengthOfArrayMines = mines.length;
+    for (let i = 0; i < lengthOfArrayMines; i++) {
         let mine = mines[i];
         if (mine.isFlag)
             continue;

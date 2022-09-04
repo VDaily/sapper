@@ -106,6 +106,8 @@ class Sapper {
         this.openCell(cell);
         this.markCell(cell, cell.countMines);
         this.isFinishGame(cell, this.mines);
+        let saveSapper = JSON.stringify(sapper);
+        localStorage.setItem("sapperJson", saveSapper);
         return;
       }
       this.uniqueCells.aroundCells(cell, this.board);
@@ -114,6 +116,9 @@ class Sapper {
     }
     this.isFinishGame(cell, this.mines);
     this.uniqueCells.setCells.clear();
+
+    let saveSapper = JSON.stringify(sapper);
+    localStorage.setItem("sapperJson", saveSapper);
   }
   rightClick(event: Event) {
     if (!event.target) return;

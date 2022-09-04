@@ -5,6 +5,8 @@ function createTable(board) {
     let div = document.createElement("div");
     let menu = createMenu();
     let settings = createSettings();
+    let info = document.createElement("div");
+    info.classList.add("board__info");
     div.classList.add("board", "board_startGame");
     table.classList.add("board__table");
     let tr;
@@ -22,9 +24,12 @@ function createTable(board) {
         }
         table.append(tr);
     }
-    div.append(settings);
-    div.append(menu);
+    info.append(settings);
+    info.append(menu);
+    div.append(info);
     div.append(table);
     document.body.append(div);
+    let widthTable = table.getBoundingClientRect().width;
+    div.style.width = widthTable + "px";
 }
 export { createTable };
