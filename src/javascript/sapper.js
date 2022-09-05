@@ -199,5 +199,11 @@ class Sapper {
         }
     }
 }
+class ModelSapper {
+}
+class ViewSapper {
+}
+class ControllerSapper {
+}
 let sapper = new Sapper();
 export { sapper };
