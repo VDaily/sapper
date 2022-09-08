@@ -42,9 +42,7 @@ function isFreely(indexes, randomNumberX, randomNumberY) {
     return true;
 }
 function generationIndexes(width, height) {
-    let numberOfCell = width * height;
     let numberOfMines = settings.levels[settings.currentIndex].countMines;
-    // let numberOfMines = Math.ceil((numberOfCell / 100) * 15);
     let randomNumberX, randomNumberY;
     let indexes = [];
     let maxX = width, maxY = height, min = 0;

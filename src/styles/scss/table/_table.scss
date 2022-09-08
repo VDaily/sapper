@@ -1,7 +1,7 @@
 * {
   margin: 0;
   padding: 0;
-  // box-sizing: border-box;
+  box-sizing: border-box;
 }
 html {
   font-style: sans-serif;
@@ -59,10 +59,14 @@ body::-webkit-scrollbar-thumb {
     border-right: 3px solid #9286ae;
     border-bottom: 3px solid #9286ae;
     border-left: 3px solid #e6e1f2;
-    .board_startGame &:active:not(.board__cell_opened, .board__cell_flag) {
+    .board_startGame &_active {
       background: #feef99;
       border: 1px solid #cbb951;
     }
+    // .board_startGame &:active:not(.board__cell_opened) {
+    //   background: #feef99;
+    //   border: 1px solid #cbb951;
+    // }
 
     &_opened {
       background: #feef99;
@@ -131,28 +135,28 @@ body::-webkit-scrollbar-thumb {
   .board_startGame &__img {
     width: 70px;
     height: 70px;
-    background: url("../../img/menu/menu__reload/1.png") #edeaf3 no-repeat;
+    background: url("../../img/menu/menu__reload/1.png") #eaeaea no-repeat;
     background-size: cover;
     cursor: pointer;
   }
   .board_won &__img {
     width: 70px;
     height: 70px;
-    background: url("../../img/menu/menu__reload/4.png") #edeaf3 no-repeat;
+    background: url("../../img/menu/menu__reload/4.png") #eaeaea no-repeat;
     background-size: 100%;
     cursor: pointer;
   }
   &__reload_scary &__img {
     width: 70px;
     height: 70px;
-    background: url("../../img/menu/menu__reload/2.png") #edeaf3 no-repeat;
+    background: url("../../img/menu/menu__reload/2.png") #eaeaea no-repeat;
     background-size: 100%;
     cursor: pointer;
   }
   &__img {
     width: 70px;
     height: 70px;
-    background: url("../../img/menu/menu__reload/3.png") #edeaf3 no-repeat;
+    background: url("../../img/menu/menu__reload/3.png") #eaeaea no-repeat;
     background-size: cover;
     cursor: pointer;
   }

@@ -1,3 +1,5 @@
+import { modelMenu } from "../../modelSapper/menu/modelMenu.js";
+import { timer } from "../../modelSapper/menu/timer/timer.js";
 import { model } from "../../modelSapper/model.js";
 import { modelSettings } from "../../modelSapper/settings/modelSettings.js";
 import { modelTable } from "../../modelSapper/table/modelTable.js";
@@ -26,6 +28,9 @@ class ControllerSapperSettings {
     this.levelUp = this.levelUp.bind(this);
 
     this.levelElement.addEventListener("click", this.levelUp);
+    this.levelElement.addEventListener("selectstart", (event) => {
+      event.preventDefault();
+    });
   }
 
   levelUp(event: Event) {
@@ -38,9 +43,10 @@ class ControllerSapperSettings {
         "Не найден элемент с классом .board__table в файле controllerSettings"
       );
     modelTable.removeDataOfTable(table);
-
+    modelTable.deleteGame();
     modelSettings.changeLevel();
-    modelTable.changeCreateTable();
+    modelTable.changeSettingsTable();
+    timer.reload();
   }
 }
 

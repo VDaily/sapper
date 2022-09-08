@@ -1,5 +1,12 @@
+import { modelMenu } from "../../modelSapper/menu/modelMenu.js";
+interface ViewMenu {
+  currentLevel: any;
+  countFlags: any;
+}
 class ViewMenu {
   constructor() {
+    this.currentLevel = modelMenu.getCurrentLevel();
+    this.countFlags = this.currentLevel.countMines;
     this.render();
   }
 
@@ -8,7 +15,7 @@ class ViewMenu {
       <div class="menu">
         <div class="menu__countMines">
           <div class="menu__paragraph">Флаги</div>
-          <div class="menu__span">0</div>
+          <div class="menu__span">${this.countFlags}</div>
         </div>
         
         <div class="menu__reload">

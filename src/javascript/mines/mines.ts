@@ -47,9 +47,7 @@ function isFreely(
   return true;
 }
 function generationIndexes(width: number, height: number) {
-  let numberOfCell = width * height;
   let numberOfMines = settings.levels[settings.currentIndex].countMines;
-  // let numberOfMines = Math.ceil((numberOfCell / 100) * 15);
 
   let randomNumberX: number, randomNumberY: number;
   let indexes: any = [];

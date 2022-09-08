@@ -11,6 +11,7 @@ interface Level {
 interface Model {
   levels: Level[];
   currentIndex: number;
+  isStartGame: boolean;
 }
 class Model {
   constructor() {
@@ -21,7 +22,7 @@ class Model {
           width: 9,
           height: 9,
         },
-        countMines: 15,
+        countMines: 13,
       },
       {
         name: "Средний",
@@ -49,6 +50,7 @@ class Model {
       },
     ];
     this.currentIndex = 0;
+    this.isStartGame = false;
   }
   changeLevel() {
     this.currentIndex++;
