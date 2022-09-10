@@ -4,6 +4,33 @@ class ViewMenu {
         this.currentLevel = modelMenu.getCurrentLevel();
         this.countFlags = this.currentLevel.countMines;
         this.render();
+        let timerElement = document.querySelector(".menu__timer-seconds");
+        if (!timerElement)
+            throw new Error("Не найден элемент с классом .menu__timer-seconds в viewMenu");
+        let menuSpan = document.querySelector(".menu__span");
+        if (!menuSpan)
+            throw new Error("Не найден элемент с классом .menu__span в viewMenu");
+        this.timerElement = timerElement;
+        this.menuSpan = menuSpan;
+    }
+    info(nameEvents) {
+        this.currentLevel = modelMenu.getCurrentLevel();
+        if (nameEvents === "flags") {
+            this.changeCountFlags();
+        }
+        else if (nameEvents === "timer") {
+            this.changeNumberOfSeconds();
+        }
+        else {
+            this.changeCountFlags();
+            this.changeNumberOfSeconds();
+        }
+    }
+    changeNumberOfSeconds() {
+        this.timerElement.innerHTML = `${modelMenu.getCountTimer()}`;
+    }
+    changeCountFlags() {
+        this.menuSpan.innerHTML = `${modelMenu.getCountFlags()}`;
     }
     createMenu() {
         let html = `

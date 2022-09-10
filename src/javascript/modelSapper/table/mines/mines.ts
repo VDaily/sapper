@@ -35,6 +35,17 @@ class Mines {
     minesAroundcell.setCells.clear();
     return mines;
   }
+  getArrayMines(board: any) {
+    let mines: any[] = [];
+    board.forEach((tr: any) => {
+      tr.forEach((cell: any) => {
+        if (cell.isMine) {
+          mines.push(cell);
+        }
+      });
+    });
+    return mines;
+  }
   #isFreely(
     indexes: number[],
     randomNumberX: number,

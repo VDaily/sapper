@@ -1,3 +1,4 @@
+import { modelMenu } from "../modelMenu.js";
 class Timer {
     constructor() {
         this.count = 0;
@@ -15,9 +16,20 @@ class Timer {
         if (!timer)
             return;
         this.count++;
-        timer.innerHTML = `${this.count}`;
         let tic = this.tic.bind(this);
+        modelMenu.changeMenu("timer");
+        this.saveTimer();
         this.saveIndexTimeout = setTimeout(tic, 1000);
+    }
+    getCount() {
+        return this.count;
+    }
+    setCount(numberOfSeconds) {
+        this.count = numberOfSeconds;
+    }
+    saveTimer() {
+        let numberOfSeconds = JSON.stringify(this.getCount());
+        localStorage.setItem("timer", numberOfSeconds);
     }
     reload() {
         this.finishTimer();

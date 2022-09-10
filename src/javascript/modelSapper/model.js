@@ -1,6 +1,10 @@
+import { viewsSettings } from "../../javascript/viewSapper/settings/viewSettings.js";
 [];
 class Model {
     constructor() {
+        this.currentSettings();
+    }
+    currentSettings() {
         this.levels = [
             {
                 name: "Лёгкий",
@@ -42,6 +46,10 @@ class Model {
         this.currentIndex++;
         if (this.currentIndex >= this.levels.length)
             this.currentIndex = 0;
+    }
+    setSettings(currentIndex) {
+        this.currentIndex = currentIndex;
+        viewsSettings.changeEvent();
     }
 }
 let model = new Model();

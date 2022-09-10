@@ -1,7 +1,6 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 html {
@@ -67,6 +66,8 @@ body::-webkit-scrollbar-thumb {
   border: 1px solid #cbb951;
 }
 .board__cell_opened {
+  width: 29px;
+  height: 29px;
   background: #feef99;
   border: 1px solid #cbb951;
 }
@@ -76,6 +77,10 @@ body::-webkit-scrollbar-thumb {
 }
 .board__cell_mine {
   background: url(../../img/mine/mine.png) #feef99 no-repeat;
+  background-size: 100%;
+}
+.board__cell_mine-deactivated {
+  background: url("../../img/mine/mineDeactivated.png") #feef99 no-repeat;
   background-size: 100%;
 }
 .board__cell_mine-click {

@@ -1,7 +1,7 @@
-class ControllerBoard {
-  load() {}
-}
+// class ControllerBoard {
+//   load() {}
+// }
 
-let controllerBoard = new ControllerBoard();
+// let controllerBoard = new ControllerBoard();
 
-export { controllerBoard };
+// export { controllerBoard };

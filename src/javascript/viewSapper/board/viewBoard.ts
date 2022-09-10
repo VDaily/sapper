@@ -6,6 +6,7 @@ class viewsBoard {
     let board = document.createElement("div");
 
     board.classList.add("board", "board_startGame");
+
     return board;
   }
 

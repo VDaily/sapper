@@ -1,4 +1,6 @@
+import { modelMenu } from "../../modelSapper/menu/modelMenu.js";
 import { timer } from "../../modelSapper/menu/timer/timer.js";
+import { model } from "../../modelSapper/model.js";
 import { modelSettings } from "../../modelSapper/settings/modelSettings.js";
 import { modelTable } from "../../modelSapper/table/modelTable.js";
 class ControllerSapperSettings {
@@ -20,7 +22,11 @@ class ControllerSapperSettings {
         modelTable.removeDataOfTable(table);
         modelTable.deleteGame();
         modelSettings.changeLevel();
+        modelMenu.setCountFlags(model.levels[model.currentIndex].countMines);
         modelTable.changeSettingsTable();
+        modelMenu.changeMenu();
+        modelTable.resetClassesForBoard(modelTable.boardElement);
+        model.isStartGame = false;
         timer.reload();
     }
 }

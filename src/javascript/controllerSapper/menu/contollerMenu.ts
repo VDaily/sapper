@@ -1,3 +1,4 @@
+import { modelMenu } from "../../modelSapper/menu/modelMenu.js";
 import { timer } from "../../modelSapper/menu/timer/timer.js";
 import { model } from "../../modelSapper/model.js";
 import { modelTable } from "../../modelSapper/table/modelTable.js";
@@ -15,8 +16,12 @@ class ControllerMenu {
   click(event: Event) {
     modelTable.deleteGame();
     modelTable.reload();
-    timer.reload();
+    modelTable.resetClassesForBoard(modelTable.boardElement);
     model.isStartGame = false;
+    modelMenu.setCountFlags(model.levels[model.currentIndex].countMines);
+    modelMenu.changeMenu("flag");
+
+    timer.reload();
   }
   load() {}
 }

@@ -9,7 +9,6 @@ class ViewSapperSettings {
     changeEvent() {
         this.name = modelSettings.getCurrentName();
         this.changeLevel();
-        console.log(this.name);
     }
     changeLevel() {
         let settingsLevel = document.querySelector(".settings__level");

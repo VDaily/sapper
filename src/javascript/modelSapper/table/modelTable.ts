@@ -1,8 +1,9 @@
 import { viewTable } from "../../viewSapper/table/viewTable.js";
+import { modelMenu } from "../menu/modelMenu.js";
 import { timer } from "../menu/timer/timer.js";
 import { model, Model } from "../model.js";
 import { UniqueCells } from "./cells/cells.js";
-import { Flags } from "./flags/flags.js";
+import { flags } from "./flags/flags.js";
 import { mines } from "./mines/mines.js";
 
 interface ModelTable {
@@ -20,24 +21,45 @@ interface ModelTable {
 class ModelTable extends Model {
   constructor() {
     super();
-    localStorage.clear();
+    // localStorage.clear();
     if (localStorage.length > 0) {
-      console.log("Делаем это");
       this.loadGame();
-      console.log(this.tableArray);
-      return;
+      this.countMines = model.levels[model.currentIndex].countMines;
+      this.uniqueCells = new UniqueCells();
+      this.flags = flags;
+      let countFlags = this.getItem("countFlags");
+      this.isEndGame = false;
+      this.flags.setCountFlags(countFlags);
+      let boardElement = document.querySelector(".board");
+      if (!boardElement) return;
+      this.boardElement = boardElement;
+      setTimeout(() => {
+        this.tableArray.forEach((trArray: any) => {
+          trArray.forEach((cellObj: any) => {
+            viewTable.info(cellObj);
+          });
+        });
+      });
+      let numberOfSeconds = this.getItem("timer");
+      if (numberOfSeconds) {
+        timer.setCount(numberOfSeconds);
+      }
+
+      modelMenu.changeMenu();
+    } else {
+      this.start();
     }
-    this.start();
   }
   start() {
     this.numberOfOpenCell = 0;
-    this.countOfCells = 0;
+    this.countOfCells =
+      model.levels[model.currentIndex].sizes.width *
+      model.levels[model.currentIndex].sizes.width;
     this.tableArray = this.createTableArray();
     this.countMines = model.levels[model.currentIndex].countMines;
     this.isEndGame = false;
-
     this.mines = mines.placeMines(this.tableArray, this.countMines);
-    this.flags = new Flags(model.levels[model.currentIndex].countMines);
+    this.flags = flags;
     this.uniqueCells = new UniqueCells();
     let boardElement = document.querySelector(".board");
     if (!boardElement) return;
@@ -46,26 +68,34 @@ class ModelTable extends Model {
   getBoard() {
     return this.tableArray;
   }
+
   saveGame() {
+    let numberOfOpenCellString = this.numberOfOpenCell + "";
+    let countOfCellsString = this.countOfCells + "";
     let boardString = JSON.stringify(this.tableArray);
-    console.log("saveGame", boardString);
     let currentIndex = model.currentIndex + "";
-    let isStartGame = model.isStartGame + "";
-    localStorage.setItem("boardString", boardString);
+    let flagsString = this.flags.countFlags;
+    localStorage.setItem("numberOfOpenCell", numberOfOpenCellString);
+    localStorage.setItem("countOfCells", countOfCellsString);
+    localStorage.setItem("board", boardString);
     localStorage.setItem("currentIndex", currentIndex);
-    localStorage.setItem("isStartGame", isStartGame);
+    localStorage.setItem("countFlags", flagsString);
+  }
+  getItem(name: string) {
+    let item = localStorage.getItem(name);
+    if (!item) return;
+    return JSON.parse(item);
   }
   loadGame() {
-    let boardString = localStorage.getItem("boardString");
-    let currentIndexString = localStorage.getItem("currentIndex");
-    let isStartGameString = localStorage.getItem("isStartGame");
-    if (!boardString) return;
-    if (!currentIndexString) return;
-    if (!isStartGameString) return;
-    this.tableArray = JSON.parse(boardString);
-    let currentIndex = JSON.parse(currentIndexString);
-    let isStartGame = JSON.parse(isStartGameString);
-    console.log("Загрузка", this.tableArray, currentIndex, isStartGame);
+    this.numberOfOpenCell = this.getItem("numberOfOpenCell");
+    this.countOfCells = this.getItem("countOfCells");
+    this.tableArray = this.getItem("board");
+
+    let currentIndex = this.getItem("currentIndex");
+
+    this.mines = mines.getArrayMines(this.tableArray);
+
+    model.setSettings(currentIndex);
   }
   deleteGame() {
     localStorage.clear();
@@ -73,24 +103,19 @@ class ModelTable extends Model {
 
   createTableArray() {
     let board = [];
-    let countOfCells = 0;
     let width = model.levels[model.currentIndex].sizes.width;
     let height = model.levels[model.currentIndex].sizes.height;
     for (let i = 0; i < height; i++) {
       let arr = [];
       for (let j = 0; j < width; j++) {
-        let tdElement = document.createElement("td");
         let point = {
           coordinates: [i, j],
           isMine: false,
-          td: tdElement,
         };
         arr.push(point);
-        countOfCells++;
       }
       board.push(arr);
     }
-    this.countOfCells = countOfCells;
     return board;
   }
   changeEventViewTable(boardObj: any) {
@@ -98,7 +123,7 @@ class ModelTable extends Model {
   }
   changeSettingsTable() {
     this.start();
-    this.#addClassStartGame(this.boardElement);
+    this.addClassStartGame(this.boardElement);
 
     this.changeEventViewTable(this.tableArray);
   }
@@ -118,21 +143,7 @@ class ModelTable extends Model {
   }
 
   #openCell(cell: any) {
-    cell.td.classList.add("board__cell_opened");
     cell.isOpen = true;
-  }
-
-  #markCell(cell: any, count: any) {
-    cell.td.innerHTML = count;
-  }
-  createArrayAllCells(board: any) {
-    let allCellsArray: object[] = [];
-    board.arrayBoard.forEach((row: []) => {
-      row.forEach((cell) => {
-        allCellsArray.push(cell);
-      });
-    });
-    return allCellsArray;
   }
   #isHit(cell: any) {
     if (cell.isMine) return true;
@@ -141,20 +152,21 @@ class ModelTable extends Model {
   clickOnCell(event: Event) {
     let cellObj = this.#getACell(event.target);
     if (!cellObj) return;
-
     if (cellObj.isOpen) return;
     if (cellObj.isFlag) return;
     if (this.#isHit(cellObj)) {
       this.removeClassesFromTagBoard(false);
       this.fail(cellObj, this.mines);
       timer.finishTimer();
+      this.deleteGame();
+
+      return;
     } else {
       if (cellObj.countMines > 0) {
-        this.#addColorClassForCell(cellObj.td, cellObj.countMines);
         this.numberOfOpenCell++;
         this.#openCell(cellObj);
-        this.#markCell(cellObj, cellObj.countMines);
         this.#isFinishGame();
+        viewTable.info(cellObj);
         this.saveGame();
         return;
       }
@@ -163,10 +175,11 @@ class ModelTable extends Model {
 
       this.#openCell(cellObj);
     }
+    viewTable.info(cellObj);
 
-    this.#isFinishGame();
     this.uniqueCells.setCells.clear();
     this.saveGame();
+    this.#isFinishGame();
   }
   rightClickOnCell(event: Event) {
     let cellObj = this.#getACell(event.target);
@@ -175,12 +188,18 @@ class ModelTable extends Model {
       if (this.flags.countFlags >= this.countMines) return;
       this.flags.deleteAFlag(cellObj);
       cellObj.isFlag = false;
+      viewTable.info(cellObj, "deleteAFlag");
+      modelMenu.changeMenu("flags");
+      this.saveGame();
       return;
     }
     if (this.flags.countFlags <= 0) return;
     if (cellObj.isOpen) return;
     this.flags.putAFlag(cellObj);
     cellObj.isFlag = true;
+    viewTable.info(cellObj);
+    modelMenu.changeMenu("flags");
+    this.saveGame();
   }
   removeClassReloadScary(event: any) {
     let cellObj = this.#getACell(event.target);
@@ -219,81 +238,56 @@ class ModelTable extends Model {
   #walkTheAroundCells(board: any) {
     let cell: any,
       uniqueCellsValues = this.uniqueCells.setCells.values();
-    console.log(uniqueCellsValues);
+
     for (cell of uniqueCellsValues) {
       if (cell.isMine !== false) continue;
       if (cell.isFlag) continue;
       if (cell.isOpen) continue;
-      if (cell.countMines > 0) {
-        this.#addColorClassForCell(cell.td, cell.countMines);
-        this.#markCell(cell, cell.countMines);
-      } else {
+      if (!cell.countMines) {
         this.uniqueCells.aroundCells(cell, board);
       }
 
       this.#openCell(cell);
+      viewTable.info(cell);
       this.numberOfOpenCell++;
     }
   }
-  #addColorClassForCell(cell: HTMLElement, count: number): void {
-    switch (count) {
-      case 1:
-        cell.classList.add("board__cell_one-mine");
-        break;
-      case 2:
-        cell.classList.add("board__cell_two-mines");
-        break;
-      case 3:
-        cell.classList.add("board__cell_three-mines");
-        break;
-      case 4:
-        cell.classList.add("board__cell_four-mines");
-        break;
-      case 5:
-        cell.classList.add("board__cell_five-mines");
-        break;
-      case 6:
-        cell.classList.add("board__cell_six-mines");
-        break;
-      case 7:
-        cell.classList.add("board__cell_seven-mines");
-        break;
-      case 8:
-        cell.classList.add("board__cell_eight-mines");
-        break;
-    }
-  }
+
   #isFinishGame() {
+    this.numberOfOpenCell + this.countMines >= this.countOfCells;
     if (this.numberOfOpenCell + this.countMines >= this.countOfCells) {
       this.removeClassesFromTagBoard(true);
       this.winningTheGame(this.mines);
+      timer.finishTimer();
+      model.isStartGame = false;
       this.isEndGame = true;
+      this.deleteGame();
       return;
     }
   }
-  fail(currentCell: any, mines: []): void {
+  fail(currentCell: any, mines: any) {
     mines.forEach((mine: any) => {
-      this.#addImgIntoCellsWithMines(mine, currentCell);
-      mine.td.className += " board__cell_opened ";
+      this.#openCell(mine);
+      mine.isOpen = true;
+      if (mine.isFlag) mine.isDeactivated = true;
+
+      if (currentCell === mine) {
+        mine.clickMine = true;
+      }
+      viewTable.info(mine);
+      this.isEndGame = true;
     });
-    this.isEndGame = true;
   }
-  winningTheGame(mines: []) {
+  winningTheGame(mines: any) {
     let countMines = this.countMines;
     for (let i = 0; i < countMines; i++) {
       let mine: any = mines[i];
-      if (mine.isFlag) continue;
+      if (mine.isFlag) {
+        continue;
+      }
       this.flags.putAFlag(mine);
     }
   }
-  #addImgIntoCellsWithMines(mine: any, currentCell: any): void {
-    if (mine !== currentCell) {
-      mine.td.className += " board__cell_mine ";
-      return;
-    }
-    currentCell.td.className += " board__cell_mine-click ";
-  }
-
   removeClassesFromTagBoard(isWon: boolean): void {
     let isBoard = document.querySelector(".board");
     if (!isBoard) return;
@@ -303,7 +297,10 @@ class ModelTable extends Model {
       this.#addClassBoard_Won(board);
     }
   }
-  #addClassStartGame(board: Element): void {
+  resetClassesForBoard(board: Element) {
+    board.className = "board board_startGame";
+  }
+  addClassStartGame(board: Element): void {
     board.classList.add("board_startGame");
   }
   #removeClassStartGame(board: Element): void {

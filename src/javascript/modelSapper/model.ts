@@ -1,4 +1,5 @@
 import { viewsSettings } from "../../javascript/viewSapper/settings/viewSettings.js";
+import { modelMenu } from "./menu/modelMenu.js";
 interface Level {
   name: string;
   sizes: {
@@ -15,6 +16,9 @@ interface Model {
 }
 class Model {
   constructor() {
+    this.currentSettings();
+  }
+  currentSettings() {
     this.levels = [
       {
         name: "Лёгкий",
@@ -55,6 +59,11 @@ class Model {
   changeLevel() {
     this.currentIndex++;
     if (this.currentIndex >= this.levels.length) this.currentIndex = 0;
+  }
+  setSettings(currentIndex: number) {
+    this.currentIndex = currentIndex;
+
+    viewsSettings.changeEvent();
   }
 }
 let model = new Model();

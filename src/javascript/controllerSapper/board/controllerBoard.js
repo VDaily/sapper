@@ -1,5 +1,6 @@
-class ControllerBoard {
-    load() { }
-}
-let controllerBoard = new ControllerBoard();
-export { controllerBoard };
+"use strict";
+// class ControllerBoard {
+//   load() {}
+// }
+// let controllerBoard = new ControllerBoard();
+// export { controllerBoard };

@@ -1,7 +1,8 @@
 "use strict";
 let saveWidthTable;
-window.addEventListener("resize", resizeWidth);
-function resizeWidth(event) {
+window.addEventListener("resize", adaptiveWidth);
+window.addEventListener("load", adaptiveWidth);
+function adaptiveWidth(event) {
     let table, board, widthTable;
     table = document.querySelector(".board__table");
     if (!table)
@@ -15,5 +16,4 @@ function resizeWidth(event) {
     if (!board)
         throw new Error("Не найден элемент с классом .board");
     board.style.width = saveWidthTable + "px";
-    console.log(saveWidthTable);
 }

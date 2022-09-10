@@ -43,9 +43,15 @@ class ControllerSapperSettings {
         "Не найден элемент с классом .board__table в файле controllerSettings"
       );
     modelTable.removeDataOfTable(table);
+
     modelTable.deleteGame();
     modelSettings.changeLevel();
+
+    modelMenu.setCountFlags(model.levels[model.currentIndex].countMines);
     modelTable.changeSettingsTable();
+    modelMenu.changeMenu();
+    modelTable.resetClassesForBoard(modelTable.boardElement);
+    model.isStartGame = false;
     timer.reload();
   }
 }

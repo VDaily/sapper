@@ -30,7 +30,6 @@ class ControllerTable {
 
   click(event: Event) {
     if (this.#isEndGame(modelTable.isEndGame)) return;
-
     if (!model.isStartGame) {
       timer.startTimer();
       model.isStartGame = true;
